@@ -43,8 +43,9 @@
         "symfony/yaml": "6.1.*"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fakerphp/faker": "^1.20",
         "friendsofphp/php-cs-fixer": "^3.12",
-        "hautelook/alice-bundle": "^2.11",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.1.*",
         "symfony/css-selector": "6.1.*",

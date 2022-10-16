@@ -66,10 +66,10 @@ db-migrate: ## Execute a migration to a specified version or the latest availabl
 
 db-update: db-diff db-migrate ## Execute db-diff & db-migrate
 
-db-fixtures: db-drop db-create db-migrate ## Load data fixtures to your database
-	$(CONSOLE) hautelook:fixtures:load --no-interaction
+db-fixtures: ## Load data fixtures to your database
+	$(CONSOLE) doctrine:fixtures:load --no-interaction
 
-fixtures: db-fixtures ## Alias for db-fixtures
+fixtures: db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
 
 .PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update db-fixtures fixtures
 
@@ -82,10 +82,10 @@ fixtures: db-fixtures ## Alias for db-fixtures
 test-unit: ## Run unit tests
 	$(EXEC_PHP) bin/phpunit --no-extensions --testsuite unit
 
-test-functional: db-schema db-fixtures ## Run functional tests
+test-functional: fixtures ## Run functional tests
 	$(EXEC_PHP) bin/phpunit --testsuite functional
 
-test-smoke: db-fixtures ## Run smoke tests
+test-smoke: fixtures ## Run smoke tests
 	$(EXEC_PHP) bin/phpunit --no-extensions --testsuite smoke
 
 test-debug: ## Run tests with debug group/tags
