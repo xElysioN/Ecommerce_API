@@ -33,7 +33,7 @@ pull: ## Pull service images
 sh: ## Connect to php container
 	$(EXEC_PHP_WITH_TTY) sh
 
-install: pull docker-compose.override.yaml start composer.json db-migrate ## Install the project
+install: pull docker-compose.override.yaml start composer.json fixtures ## Install the project
 
 debug-start: start ## Start all containers with debug profile
 
@@ -66,7 +66,37 @@ db-migrate: ## Execute a migration to a specified version or the latest availabl
 
 db-update: db-diff db-migrate ## Execute db-diff & db-migrate
 
-.PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update
+db-fixtures: db-drop db-create db-migrate ## Load data fixtures to your database
+	$(CONSOLE) hautelook:fixtures:load --no-interaction
+
+fixtures: db-fixtures ## Alias for db-fixtures
+
+.PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update db-fixtures fixtures
+
+##
+###-------------#
+###    Tests    #
+###-------------#
+##
+
+test-unit: ## Run unit tests
+	$(EXEC_PHP) bin/phpunit --no-extensions --testsuite unit
+
+test-functional: db-schema db-fixtures ## Run functional tests
+	$(EXEC_PHP) bin/phpunit --testsuite functional
+
+test-smoke: db-fixtures ## Run smoke tests
+	$(EXEC_PHP) bin/phpunit --no-extensions --testsuite smoke
+
+test-debug: ## Run tests with debug group/tags
+	$(EXEC_PHP) bin/phpunit -vvv --group debug
+
+tests: test-smoke test-unit test-functional ## Execute all tests
+tu: test-unit ## Alias for test-unit
+tf: test-functional ## Alias for test-functional
+ts: test-smoke ## Alias for test-smoke
+
+.PHONY: test-unit tu test-functional tf test-debug test-smoke tests
 
 ##
 ###-----------------#
@@ -118,8 +148,8 @@ composer-require: ## Adds required packages to your composer.json and installs t
 vendor:	composer.lock ## Install dependencies
 	$(COMPOSER) install
 
-docker-compose.override.yml: ## Create docker-compose.override.yml
-	cp docker-compose.override.yml.dist docker-compose.override.yml
+docker-compose.override.yaml: ## Create docker-compose.override.yaml
+	cp docker-compose.override.yaml.dist docker-compose.override.yaml
 
 ##
 ###-------------#
