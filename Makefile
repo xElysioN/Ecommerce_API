@@ -33,12 +33,40 @@ pull: ## Pull service images
 sh: ## Connect to php container
 	$(EXEC_PHP_WITH_TTY) sh
 
-install: pull docker-compose.override.yaml start composer.json ## Install the project
+install: pull docker-compose.override.yaml start composer.json db-migrate ## Install the project
 
 debug-start: start ## Start all containers with debug profile
 
 .PHONY: start stop down sh install pull
 .PHONY: debug-start
+
+##
+###----------------#
+###    Doctrine    #
+###----------------#
+##
+
+db-create: ## Creates the configured database.
+	$(CONSOLE) doctrine:database:create --if-not-exists
+
+db-drop: ## Drops the configured database
+	$(CONSOLE) doctrine:database:drop --force --if-exists
+
+db-validate: ## Validate the doctrine ORM mapping
+	$(CONSOLE) doctrine:schema:validate
+
+db-schema: ## Executes (or dumps) the SQL needed to update the database schema to match the current mapping metadata
+	$(CONSOLE) doctrine:schema:update --force
+
+db-diff: ## Creates a new migration based on database changes
+	$(CONSOLE) make:migration
+
+db-migrate: ## Execute a migration to a specified version or the latest available version.
+	$(CONSOLE) doctrine:migrations:migrate --allow-no-migration --no-interaction --all-or-nothing
+
+db-update: db-diff db-migrate ## Execute db-diff & db-migrate
+
+.PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update
 
 ##
 ###-----------------#
