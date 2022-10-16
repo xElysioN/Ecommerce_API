@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  reverse-proxy:
+    ports:
+      -   target: 80
+          published: 80
+          protocol: tcp
+      -   target: 8080
+          published: 8080
+          protocol: tcp

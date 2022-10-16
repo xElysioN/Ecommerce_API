@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  reverse-proxy:
+    image: traefik:v2.8
+    command: --api.insecure=true --providers.docker
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  database:
+    image: mysql:8.0.30
+    environment:
+      - MYSQL_DATABASE=ecommerce
+      - MYSQL_USER=ecommerce
+      - MYSQL_PASSWORD=ecommerce
+      - MYSQL_ROOT_PASSWORD=ecommerce
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - "database-data:/var/lib/mysql:rw"
+      - "./docker/mysql:/docker-entrypoint-initdb.d"
+
+  php:
+    image: elysion/php:latest-dev
+    depends_on:
+      - database
+    volumes:
+      - "./:/srv:rw,cached"
+      - "./var:/srv/var:rw"
+
+  nginx:
+    image: nginx:1.22.0-alpine
+    depends_on:
+      - php
+    volumes:
+      - "./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
+      - "./public:/srv/public"
+    labels:
+      - "traefik.http.routers.nginx.rule=Host(`api.ecommerce.localhost`)"
+
+  adminer:
+    image: adminer:latest
+    depends_on:
+      - database
+    profiles: ["debug"]
+    environment:
+      - ADMINER_DESIGN=dracula
+      - ADMINER_DEFAULT_SERVER=database
+    labels:
+      - "traefik.http.routers.adminer.rule=Host(`adminer.ecommerce.localhost`)"
+
+  mailcatcher:
+    image: jeanberu/mailcatcher:latest
+    profiles: ["debug"]
+    labels:
+      - "traefik.http.routers.mailcatcher.rule=Host(`mail.ecommerce.localhost`)"
+      - "traefik.http.services.mailcatcher.loadbalancer.server.port=1080"
+
+volumes:
+  database-data:
