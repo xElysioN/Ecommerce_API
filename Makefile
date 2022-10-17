@@ -113,14 +113,17 @@ lint-container: ## Ensures that arguments injected into services match type decl
 lint: lint-config lint-container ## Lint twig and yaml files
 
 cs: ## Check php code style
-	$(EXEC_PHP) ./vendor/bin/php-cs-fixer fix --diff --dry-run
+	$(EXEC_PHP_WITH_TTY) ./vendor/bin/php-cs-fixer fix --diff --dry-run
 
 fix-cs: ## Fix php code style
-	$(EXEC_PHP) ./vendor/bin/php-cs-fixer fix
+	$(EXEC_PHP_WITH_TTY) ./vendor/bin/php-cs-fixer fix
 
-qa: lint cs ## Run all Q&A tools
+phpstan: ## Analyses source code
+	$(EXEC_PHP_WITH_TTY) ./vendor/bin/phpstan analyse
 
-.PHONY: lint-config lint-container lint cs fix-cs qa
+qa: lint cs phpstan ## Run all Q&A tools
+
+.PHONY: lint-config lint-container lint cs fix-cs phpstan qa
 
 ##
 ###----------------#

@@ -1,0 +1,22 @@
+parameters:
+    # https://phpstan.org/config-reference#rule-level
+    level: 8
+
+    # https://phpstan.org/config-reference#analysed-files
+    paths:
+        - src
+        - config
+        - tests
+
+    # https://github.com/phpstan/phpstan-symfony#configuration
+    # Specific configuration for the Symfony plugin
+    symfony:
+        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
+    scanDirectories:
+        - var/cache/dev/Symfony/Config
+
+    tmpDir: var/phpstan-tmp
+
+    # https://phpstan.org/config-reference#vague-typehints
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true

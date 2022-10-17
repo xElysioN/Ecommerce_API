@@ -17,7 +17,8 @@ class UserFixtures extends Fixture
 
     private Generator $faker;
 
-    public function __construct(private readonly UserPasswordHasherInterface $userPasswordHasher) {
+    public function __construct(private readonly UserPasswordHasherInterface $userPasswordHasher)
+    {
         $this->faker = Factory::create();
     }
 
@@ -39,6 +40,9 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getData(): array
     {
         $data = [
