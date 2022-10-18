@@ -58,7 +58,7 @@ class UserFixtures extends Fixture
                 'user@user.fr',
                 'John',
                 'Doe',
-                ['ROLE_USER'],
+                [User::DEFAULT_ROLE],
             ],
         ];
 
@@ -68,7 +68,7 @@ class UserFixtures extends Fixture
                 $this->faker->email(),
                 $this->faker->firstName(),
                 $this->faker->lastName(),
-                ['ROLE_USER'],
+                [User::DEFAULT_ROLE],
             ];
         }
 
