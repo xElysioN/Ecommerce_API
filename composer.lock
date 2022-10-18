@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c067bed64b493e8f49cd714b6d1ccf0",
+    "content-hash": "0f5136d4b3f0bd45f0176d7be45dc0c1",
     "packages": [
         {
             "name": "api-platform/core",
@@ -9589,6 +9589,7 @@
         "ext-libxml": "*",
         "ext-mbstring": "*",
         "ext-phar": "*",
+        "ext-redis": "*",
         "ext-tokenizer": "*",
         "ext-xml": "*",
         "ext-xmlwriter": "*"
