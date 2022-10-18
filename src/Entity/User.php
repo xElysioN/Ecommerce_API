@@ -16,6 +16,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableTrait;
 
+    public const TOKEN_SIZE = 20;
+    public const TOKEN_SIZE_HEX = 40;
+    public const TOKEN_HEADER_NAME = 'X-AUTH-TOKEN';
+    public const TOKEN_DURATION = 3600;
     public const DEFAULT_ROLE = 'ROLE_USER';
 
     #[ORM\Id]

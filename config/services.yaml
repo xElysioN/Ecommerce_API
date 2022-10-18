@@ -2,6 +2,9 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            bool $debug: '%kernel.debug%'
+            Redis $userRedisClient : '@snc_redis.user'
 
     App\:
         resource: '../src/'
@@ -9,3 +12,11 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\EventListener\LoginListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\OpenApi\AuthenticationDecorator:
+        decorates: 'api_platform.openapi.factory'
+        autoconfigure: false

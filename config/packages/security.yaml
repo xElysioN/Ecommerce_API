@@ -14,7 +14,11 @@ security:
             security: false
         main:
             lazy: true
+            stateless: true
             provider: app_user_provider
+            custom_authenticators:
+#                - App\Security\TokenAuthenticator
+                - App\Security\LoginAuthenticator
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
@@ -23,7 +27,4 @@ when@test:
     security:
         password_hashers:
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4
-                time_cost: 3
-                memory_cost: 10
+                algorithm: plaintext

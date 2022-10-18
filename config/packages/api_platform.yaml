@@ -1,0 +1,14 @@
+api_platform:
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        html: ['text/html']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    title: 'Ecommerce'
+    version: 'BETA'
+    swagger:
+        api_keys:
+            apiKey:
+                name: X-AUTH-TOKEN
+                type: header

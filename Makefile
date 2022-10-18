@@ -78,9 +78,9 @@ db-migrate: ## Execute a migration to a specified version or the latest availabl
 db-update: db-diff db-migrate ## Execute db-diff & db-migrate
 
 db-fixtures: ## Load data fixtures to your database
-	$(CONSOLE) doctrine:fixtures:load --no-interaction
+	$(CONSOLE) hautelook:fixtures:load --no-interaction
 
-fixtures: db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
+fixtures: redis-flushall db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
 
 .PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update db-fixtures fixtures
 
