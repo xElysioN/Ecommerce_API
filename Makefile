@@ -4,6 +4,8 @@ DOCKER_PHP_CONTAINER=php
 DOCKER_ALL_PROFILES=--profile=debug
 EXEC_PHP=$(DOCKER_COMPOSE) exec --user=www-data -T $(DOCKER_PHP_CONTAINER)
 EXEC_PHP_WITH_TTY=$(DOCKER_COMPOSE) exec --user=www-data $(DOCKER_PHP_CONTAINER)
+EXEC_REDIS=$(DOCKER_COMPOSE) exec --user=redis redis
+EXEC_REDIS_CLI=$(EXEC_REDIS) redis-cli
 CONSOLE=$(EXEC_PHP) bin/console
 COMPOSER=$(EXEC_PHP) composer
 DOCKERIZE=$(EXEC_PHP) dockerize
@@ -33,11 +35,20 @@ pull: ## Pull service images
 sh: ## Connect to php container
 	$(EXEC_PHP_WITH_TTY) sh
 
+redis-flushall: ## Remove all keys from all databases
+	$(EXEC_REDIS_CLI) FLUSHALL
+ 
+redis-cli: ## Connect to redis-cli in Redis container
+	$(EXEC_REDIS_CLI)
+
+redis-sh: ## Connect to Redis container
+	$(EXEC_REDIS) sh
+
 install: pull docker-compose.override.yaml start composer.json fixtures ## Install the project
 
 debug-start: start ## Start all containers with debug profile
 
-.PHONY: start stop down sh install pull
+.PHONY: start stop down pull sh redis-flushall redis-cli redis-sh install 
 .PHONY: debug-start
 
 ##
