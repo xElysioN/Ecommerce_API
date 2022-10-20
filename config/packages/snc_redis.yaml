@@ -5,3 +5,10 @@ snc_redis:
             dsn: "%env(REDIS_URL)%"
             options:
                 prefix: "user:"
+
+when@test:
+    snc_redis:
+        clients:
+            user:
+                options:
+                    prefix: "test_user:"
