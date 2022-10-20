@@ -24,7 +24,7 @@ class UserProcessor implements ProcessorInterface
         $this->redisClient = $userRedisClient;
     }
 
-    public function preProcess(string $id, $object): void
+    public function preProcess(string $id, object $object): void
     {
         if (!$object instanceof User) {
             return;
@@ -33,7 +33,10 @@ class UserProcessor implements ProcessorInterface
         $object->setPassword($this->userPasswordHasher->hashPassword($object, $object->getPassword()));
     }
 
-    public function postProcess(string $id, $object): void
+    /**
+     * @throws \RedisException
+     */
+    public function postProcess(string $id, object $object): void
     {
         if (!$object instanceof User || !array_key_exists($object->getEmail(), self::TOKENS)) {
             return;

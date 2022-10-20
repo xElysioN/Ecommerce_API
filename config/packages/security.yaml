@@ -4,9 +4,7 @@ security:
 
     providers:
         app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
+            id: App\Security\UserProvider
 
     firewalls:
         dev:
@@ -17,7 +15,7 @@ security:
             stateless: true
             provider: app_user_provider
             custom_authenticators:
-#                - App\Security\TokenAuthenticator
+                - App\Security\TokenAuthenticator
                 - App\Security\LoginAuthenticator
 
     role_hierarchy:

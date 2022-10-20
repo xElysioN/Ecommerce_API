@@ -6,5 +6,6 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class InvalidEmailFormatException extends BadRequestException
 {
-    protected $message = "The email field is not in a valid format";
+    /** @var string */
+    protected $message = 'The email field is not in a valid format';
 }
