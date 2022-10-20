@@ -4,13 +4,15 @@ DOCKER_PHP_CONTAINER=php
 DOCKER_ALL_PROFILES=--profile=debug
 EXEC_PHP=$(DOCKER_COMPOSE) exec --user=www-data -T $(DOCKER_PHP_CONTAINER)
 EXEC_PHP_WITH_TTY=$(DOCKER_COMPOSE) exec --user=www-data $(DOCKER_PHP_CONTAINER)
-EXEC_REDIS=$(DOCKER_COMPOSE) exec --user=redis redis
+EXEC_REDIS=$(DOCKER_COMPOSE) exec -T --user=redis redis
 EXEC_REDIS_CLI=$(EXEC_REDIS) redis-cli
 CONSOLE=$(EXEC_PHP) bin/console
 COMPOSER=$(EXEC_PHP) composer
 DOCKERIZE=$(EXEC_PHP) dockerize
+REDIS_USER_PREFIX=user
 
 test-%: EXEC_PHP=$(DOCKER_COMPOSE) exec --env APP_ENV=test --user=www-data -T $(DOCKER_PHP_CONTAINER)
+test-%: REDIS_USER_PREFIX=test_user
 debug-%: DOCKER_PROFILE=--profile=debug
 
 ##
@@ -37,18 +39,21 @@ sh: ## Connect to php container
 
 redis-flushall: ## Remove all keys from all databases
 	$(EXEC_REDIS_CLI) FLUSHALL
- 
+
 redis-cli: ## Connect to redis-cli in Redis container
 	$(EXEC_REDIS_CLI)
 
 redis-sh: ## Connect to Redis container
 	$(EXEC_REDIS) sh
 
+redis-del-users: ## Delete all 'user:' keys in redis
+	$(EXEC_REDIS_CLI) KEYS "$(REDIS_USER_PREFIX):*" | xargs -r $(EXEC_REDIS_CLI) DEL  
+
 install: pull docker-compose.override.yaml start composer.json fixtures ## Install the project
 
-debug-start: start ## Start all containers with debug profile
+debug-start: start ## Start all containers with docker debug profile
 
-.PHONY: start stop down pull sh redis-flushall redis-cli redis-sh install 
+.PHONY: start stop down pull sh redis-flushall redis-cli redis-sh redis-del-users install 
 .PHONY: debug-start
 
 ##
@@ -80,7 +85,7 @@ db-update: db-diff db-migrate ## Execute db-diff & db-migrate
 db-fixtures: ## Load data fixtures to your database
 	$(CONSOLE) hautelook:fixtures:load --no-interaction
 
-fixtures: redis-flushall db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
+fixtures: redis-del-users db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
 
 .PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update db-fixtures fixtures
 
