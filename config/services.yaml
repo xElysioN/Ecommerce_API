@@ -20,3 +20,7 @@ services:
     App\OpenApi\AuthenticationDecorator:
         decorates: 'api_platform.openapi.factory'
         autoconfigure: false
+
+    App\State\UserRegistrationProcessor:
+        bind:
+            $decorated: '@api_platform.doctrine.orm.state.persist_processor'

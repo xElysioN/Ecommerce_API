@@ -85,6 +85,7 @@ db-update: db-diff db-migrate ## Execute db-diff & db-migrate
 db-fixtures: ## Load data fixtures to your database
 	$(CONSOLE) hautelook:fixtures:load --no-interaction
 
+test-fixtures: fixtures
 fixtures: redis-del-users db-drop db-create db-migrate db-fixtures ## Reset database and load data fixtures to your database
 
 .PHONY: db-create db-drop db-validate db-schema db-diff db-migrate db-update db-fixtures fixtures

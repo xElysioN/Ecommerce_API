@@ -22,5 +22,7 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
     public function urlProvider(): \Generator
     {
         yield ['/'];
+        yield ['/login'];
+        yield ['/logout'];
     }
 }

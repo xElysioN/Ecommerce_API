@@ -16,4 +16,13 @@ abstract class ApiTestCase extends BaseApiTestCase
             ],
         ]);
     }
+
+    public static function changeUser(Client $client, string $token): void
+    {
+        $client->setDefaultOptions([
+            'headers' => [
+                User::TOKEN_HEADER_NAME => $token,
+            ],
+        ]);
+    }
 }

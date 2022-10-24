@@ -49,6 +49,7 @@
         "fakerphp/faker": "^1.20",
         "friendsofphp/php-cs-fixer": "^3.12",
         "hautelook/alice-bundle": "^2.11",
+        "justinrainbow/json-schema": "^5.2",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.8",
         "phpstan/phpstan-symfony": "^1.2",
